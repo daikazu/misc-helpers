@@ -36,16 +36,16 @@
         "psr-4": {
             "Daikazu\\MiscHelpers\\": "src/",
             "Daikazu\\MiscHelpers\\Database\\Factories\\": "database/factories/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Daikazu\\MiscHelpers\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "scripts": {
         "post-autoload-dump": "@composer run prepare",
