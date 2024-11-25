@@ -215,3 +215,43 @@ describe('clean_string', function () {
         expect($cleaned)->toBe('hello world');
     });
 });
+
+
+describe('remove_trailing_double_slashes', function () {
+    it('removes trailing double slashes from a URL', function () {
+        $url = 'http://example.com//path//to//resource//';
+        $expected = 'http://example.com/path/to/resource/';
+
+        $result = remove_trailing_double_slashes($url);
+
+        expect($result)->toBe($expected);
+    });
+
+    it('removes double slashes throughout the URL', function () {
+        $url = 'http://example.com////path//to//resource';
+        $expected = 'http://example.com/path/to/resource';
+
+        $result = remove_trailing_double_slashes($url);
+
+        expect($result)->toBe($expected);
+    });
+
+    it('does nothing to a clean URL', function () {
+        $url = 'https://example.com/path/to/resource';
+        $expected = 'https://example.com/path/to/resource';
+
+        $result = remove_trailing_double_slashes($url);
+
+        expect($result)->toBe($expected);
+    });
+
+    it('handles already clean URLs', function () {
+        $url = 'https://example.com/path/to/resource';
+        $expected = 'https://example.com/path/to/resource';
+
+        $result = remove_trailing_double_slashes($url);
+
+        expect($result)->toBe($expected);
+    });
+
+});
