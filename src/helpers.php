@@ -136,20 +136,20 @@ if (! function_exists('generate_initials')) {
         }
     }
 
-    if (!function_exists('remove_trailing_double_slashes')) {
+    if (! function_exists('remove_trailing_double_slashes')) {
         function remove_trailing_double_slashes(string $url): string
         {
-             return preg_replace_callback(
+            return preg_replace_callback(
                 '#^(https?://)?(.*)$#',
                 function ($matches) {
                     $protocol = $matches[1]; // No need for null coalescing
                     $rest = preg_replace('#/{2,}#', '/', $matches[2]); // Normalize slashes in the rest
+
                     return $protocol . $rest;
                 },
                 $url
             );
         }
     }
-
 
 }

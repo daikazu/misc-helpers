@@ -63,7 +63,6 @@ describe('format_business_hours', function () {
     });
 });
 
-
 describe('calculate_read_time', function () {
     it('calculates minimum read time of 1 minute for short content', function () {
         $shortContent = '<p>This is a very short text.</p>';
@@ -219,7 +218,6 @@ describe('clean_string', function () {
         expect($cleaned)->toBe('hello world');
     });
 });
-
 
 describe('remove_trailing_double_slashes', function () {
     it('removes trailing double slashes from a URL', function () {
