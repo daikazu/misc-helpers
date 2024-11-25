@@ -11,7 +11,8 @@ describe('format_business_hours', function () {
 
         $formatted = format_business_hours($hours, 'America/New_York');
 
-        expect($formatted)->toBe('Monday 9am-5pm EDT');
+        $currentAbbreviation = (new DateTime('now', new DateTimeZone('America/New_York')))->format('T');
+        expect($formatted)->toBe("Monday 9am-5pm {$currentAbbreviation}");
     });
 
     it('groups consecutive days with same hours', function () {
@@ -23,7 +24,8 @@ describe('format_business_hours', function () {
 
         $formatted = format_business_hours($hours, 'America/New_York');
 
-        expect($formatted)->toBe('Monday - Wednesday 9am-5pm EDT');
+        $currentAbbreviation = (new DateTime('now', new DateTimeZone('America/New_York')))->format('T');
+        expect($formatted)->toBe("Monday - Wednesday 9am-5pm {$currentAbbreviation}");
     });
 
     it('separates different hour groups with commas', function () {
@@ -35,7 +37,8 @@ describe('format_business_hours', function () {
 
         $formatted = format_business_hours($hours, 'America/New_York');
 
-        expect($formatted)->toBe('Monday, Tuesday 9am-5pm EDT, Wednesday 10am-6pm EDT');
+        $currentAbbreviation = (new DateTime('now', new DateTimeZone('America/New_York')))->format('T');
+        expect($formatted)->toBe("Monday, Tuesday 9am-5pm {$currentAbbreviation}, Wednesday 10am-6pm {$currentAbbreviation}");
     });
 
     it('uses application timezone when none specified', function () {
@@ -59,6 +62,7 @@ describe('format_business_hours', function () {
             ->toThrow(Exception::class);
     });
 });
+
 
 describe('calculate_read_time', function () {
     it('calculates minimum read time of 1 minute for short content', function () {
