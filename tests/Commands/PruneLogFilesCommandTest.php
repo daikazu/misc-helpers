@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 use Daikazu\MiscHelpers\Commands\PruneLogFilesCommand;
 use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Set up the environment for the tests
     $this->logPath = storage_path('logs');
     File::ensureDirectoryExists($this->logPath);
     File::cleanDirectory($this->logPath);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     // Clean up after the tests
     File::cleanDirectory($this->logPath);
 });
 
-it('deletes log files older than the specified number of days', function () {
+it('deletes log files older than the specified number of days', function (): void {
     // Create a log file older than 7 days
     $oldLogFile = $this->logPath . '/old.log';
     File::put($oldLogFile, 'Old log content');
@@ -37,7 +39,7 @@ it('deletes log files older than the specified number of days', function () {
         ->and(File::exists($newLogFile))->toBeTrue();
 });
 
-it('outputs the correct number of deleted files and freed space', function () {
+it('outputs the correct number of deleted files and freed space', function (): void {
     $oldLogFile1 = $this->logPath . '/old1.log';
     $oldLogFile2 = $this->logPath . '/old2.log';
     File::put($oldLogFile1, str_repeat('A', 1024 * 1024)); // 1 MB

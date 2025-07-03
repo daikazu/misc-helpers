@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Daikazu\MiscHelpers;
 
 use Daikazu\MiscHelpers\Commands\PruneLogFilesCommand;

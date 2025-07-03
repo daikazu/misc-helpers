@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (! function_exists('format_business_hours')) {
 
     /**
@@ -17,25 +19,26 @@ if (! function_exists('format_business_hours')) {
             $timezone = config('app.local_timezone');
         }
 
-        $formatTime = function ($time) use ($timezone) {
+        $formatTime = function ($time) use ($timezone): string {
             $date = new DateTime($time, new DateTimeZone($timezone));
 
             return $date->format('ga'); // Converts to am/pm format
         };
 
-        $getTimezoneAbbreviation = function () use ($timezone) {
+        $getTimezoneAbbreviation = function () use ($timezone): string {
             $dateTime = new DateTime('now', new DateTimeZone($timezone));
 
             return $dateTime->format('T');
         };
 
-        $groupHours = function ($hours) {
+        $groupHours = function ($hours): array {
             $grouped = [];
             foreach ($hours as $day => $times) {
                 $key = sprintf('%s-%s', $times['open'], $times['close']);
                 if (! isset($grouped[$key])) {
                     $grouped[$key] = [];
                 }
+
                 $grouped[$key][] = ucfirst($day);
             }
 
@@ -54,11 +57,12 @@ if (! function_exists('format_business_hours')) {
             // Find ranges or single days
             if (count($groupedHours[$times]) > 2) {
                 $lastDay = end($groupedHours[$times]);
-                $part = "{$firstDay} - {$lastDay} {$open}-{$close} {$timezoneAbbreviation}";
+                $part = sprintf('%s - %s %s-%s %s', $firstDay, $lastDay, $open, $close, $timezoneAbbreviation);
             } else {
                 $days = implode(', ', array_map('ucfirst', $groupedHours[$times]));
-                $part = "{$days} {$open}-{$close} {$timezoneAbbreviation}";
+                $part = sprintf('%s %s-%s %s', $days, $open, $close, $timezoneAbbreviation);
             }
+
             $parts[] = $part;
         }
 
@@ -73,7 +77,7 @@ if (! function_exists('calculate_read_time')) {
         $htmlContent = preg_replace('/<(script|style)\b[^>]*>(.*?)<\/\1>/is', '', $htmlContent);
 
         // Remove HTML tags to isolate the text
-        $textContent = strip_tags($htmlContent);
+        $textContent = strip_tags((string) $htmlContent);
 
         // Decode HTML entities
         $textContent = html_entity_decode($textContent, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -94,7 +98,7 @@ if (! function_exists('calculate_read_time')) {
 if (! function_exists('is_blade_section_empty')) {
     function is_blade_section_empty($section): bool
     {
-        return empty(trim(view()->getSections()[$section] ?? ''));
+        return in_array(trim(view()->getSections()[$section] ?? ''), ['', '0'], true);
     }
 }
 
@@ -132,9 +136,9 @@ if (! function_exists('clean_string')) {
         $string = preg_replace('/[\x00-\x08\x0B-\x1F\x7F]/u', '', $string);
 
         // Normalize whitespace (including tabs and newlines)
-        $string = preg_replace('/\s+/u', ' ', trim($string));
+        $string = preg_replace('/\s+/u', ' ', trim((string) $string));
 
-        return $lowercase ? mb_strtolower($string) : $string;
+        return $lowercase ? mb_strtolower((string) $string) : $string;
     }
 }
 
@@ -143,7 +147,7 @@ if (! function_exists('remove_trailing_double_slashes')) {
     {
         return preg_replace_callback(
             '#^(https?://)?(.*)$#',
-            function ($matches) {
+            function (array $matches) {
                 $protocol = $matches[1]; // No need for null coalescing
                 $rest = preg_replace('#/{2,}#', '/', $matches[2]); // Normalize slashes in the rest
 

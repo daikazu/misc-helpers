@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Daikazu\MiscHelpers\Utilities;
 
 use InvalidArgumentException;
@@ -7,6 +9,7 @@ use InvalidArgumentException;
 class PhpArrayFormatter
 {
     private int $indentLevel = 0;
+
     private string $indentString = '    '; // 4 spaces
 
     public function format(array $data): string
@@ -16,7 +19,7 @@ class PhpArrayFormatter
 
     private function arrayToString(array $array, bool $inline = false): string
     {
-        if (empty($array)) {
+        if ($array === []) {
             return '[]';
         }
 
@@ -35,7 +38,7 @@ class PhpArrayFormatter
             return '[' . implode(', ', $items) . ']';
         }
 
-        return "[\n" . implode(",\n", array_map(fn ($item) => $indent . $this->indentString . $item, $items))
+        return "[\n" . implode(",\n", array_map(fn ($item): string => $indent . $this->indentString . $item, $items))
             . "\n" . $indent . ']';
     }
 
@@ -93,7 +96,7 @@ class PhpArrayFormatter
 
     private function isAssociative(array $array): bool
     {
-        if (empty($array)) {
+        if ($array === []) {
             return false;
         }
 
@@ -103,7 +106,7 @@ class PhpArrayFormatter
     private function shouldBeInline(array $array): bool
     {
         // Check if array is small and simple enough to be displayed inline
-        if (empty($array)) {
+        if ($array === []) {
             return true;
         }
 

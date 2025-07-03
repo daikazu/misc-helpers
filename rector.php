@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/config',
+        //        __DIR__ . '/config',
         __DIR__ . '/resources',
         __DIR__ . '/src',
         __DIR__ . '/tests',
@@ -14,4 +15,7 @@ return RectorConfig::configure()
     // uncomment to reach your current PHP version
     ->withPhpSets(php84: true)
     ->withPreparedSets(codingStyle: true, codeQuality: true, deadCode: true)
-    ->withTypeCoverageLevel(50);
+    ->withTypeCoverageLevel(50)
+    ->withRules([
+        DeclareStrictTypesRector::class
+    ]);
