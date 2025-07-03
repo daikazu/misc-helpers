@@ -257,3 +257,77 @@ describe('remove_trailing_double_slashes', function () {
     });
 
 });
+
+describe('convert_to_iso_8601_duration', function () {
+    it('converts hours, minutes, and seconds format', function () {
+        expect(convert_to_iso_8601_duration('1:30:45'))->toBe('PT1H30M45S');
+    });
+
+    it('converts minutes and seconds format', function () {
+        expect(convert_to_iso_8601_duration('30:45'))->toBe('PT30M45S');
+    });
+
+    it('converts seconds only format', function () {
+        expect(convert_to_iso_8601_duration('45'))->toBe('PT45S');
+    });
+
+    it('handles zero hours', function () {
+        expect(convert_to_iso_8601_duration('0:30:45'))->toBe('PT30M45S');
+    });
+
+    it('handles zero minutes', function () {
+        expect(convert_to_iso_8601_duration('1:0:45'))->toBe('PT1H45S');
+    });
+
+    it('handles zero seconds', function () {
+        expect(convert_to_iso_8601_duration('1:30:0'))->toBe('PT1H30M');
+    });
+
+    it('handles all zeros', function () {
+        expect(convert_to_iso_8601_duration('0:0:0'))->toBe('PT0S');
+    });
+
+    it('handles single zero', function () {
+        expect(convert_to_iso_8601_duration('0'))->toBe('PT0S');
+    });
+
+    it('handles double zero format', function () {
+        expect(convert_to_iso_8601_duration('0:0'))->toBe('PT0S');
+    });
+
+    it('handles large values', function () {
+        expect(convert_to_iso_8601_duration('25:75:90'))->toBe('PT25H75M90S');
+    });
+
+    it('handles single digit values', function () {
+        expect(convert_to_iso_8601_duration('1:2:3'))->toBe('PT1H2M3S');
+    });
+
+    it('handles only hours and minutes', function () {
+        expect(convert_to_iso_8601_duration('2:30:0'))->toBe('PT2H30M');
+    });
+
+    it('handles only hours and seconds', function () {
+        expect(convert_to_iso_8601_duration('2:0:30'))->toBe('PT2H30S');
+    });
+
+    it('handles only minutes and seconds with zero hours', function () {
+        expect(convert_to_iso_8601_duration('0:15:30'))->toBe('PT15M30S');
+    });
+
+    it('handles empty string gracefully', function () {
+        expect(convert_to_iso_8601_duration(''))->toBe('PT0S');
+    });
+
+    it('handles string with leading zeros', function () {
+        expect(convert_to_iso_8601_duration('01:05:09'))->toBe('PT1H5M9S');
+    });
+
+    it('handles very large hour values', function () {
+        expect(convert_to_iso_8601_duration('100:30:45'))->toBe('PT100H30M45S');
+    });
+
+    it('handles maximum typical values', function () {
+        expect(convert_to_iso_8601_duration('23:59:59'))->toBe('PT23H59M59S');
+    });
+});

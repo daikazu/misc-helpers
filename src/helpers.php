@@ -1,19 +1,19 @@
 <?php
 
-if (! function_exists('format_business_hours')) {
+if (!function_exists('format_business_hours')) {
 
     /**
      * Formats business hours for display, grouping similar hours and converting times to a specified timezone.
      *
-     * @param  array  $hours  Array of business hours.
-     * @param  ?string  $timezone  Optional. Timezone for converting hours. Defaults to application's local timezone.
+     * @param array $hours Array of business hours.
+     * @param  ?string $timezone Optional. Timezone for converting hours. Defaults to application's local timezone.
      * @return string Formatted business hours.
      *
      * @throws Exception
      */
     function format_business_hours(array $hours, ?string $timezone = null): string
     {
-        if (! $timezone) {
+        if (!$timezone) {
             $timezone = config('app.local_timezone');
         }
 
@@ -33,7 +33,7 @@ if (! function_exists('format_business_hours')) {
             $grouped = [];
             foreach ($hours as $day => $times) {
                 $key = sprintf('%s-%s', $times['open'], $times['close']);
-                if (! isset($grouped[$key])) {
+                if (!isset($grouped[$key])) {
                     $grouped[$key] = [];
                 }
                 $grouped[$key][] = ucfirst($day);
@@ -66,7 +66,7 @@ if (! function_exists('format_business_hours')) {
     }
 }
 
-if (! function_exists('calculate_read_time')) {
+if (!function_exists('calculate_read_time')) {
     function calculate_read_time(string $htmlContent, int $averageReadingSpeed = 225): int
     {
         // Remove script and style content
@@ -87,22 +87,22 @@ if (! function_exists('calculate_read_time')) {
         }
 
         // Calculate the estimated read time in minutes
-        return (int) ceil($wordCount / $averageReadingSpeed);
+        return (int)ceil($wordCount / $averageReadingSpeed);
     }
 }
 
-if (! function_exists('is_blade_section_empty')) {
+if (!function_exists('is_blade_section_empty')) {
     function is_blade_section_empty($section): bool
     {
         return empty(trim(view()->getSections()[$section] ?? ''));
     }
 }
 
-if (! function_exists('generate_initials')) {
+if (!function_exists('generate_initials')) {
     /**
      * Generates initials from a full name.
      *
-     * @param  int  $length  Maximum number of initials
+     * @param int $length Maximum number of initials
      */
     function generate_initials(string $name, int $length = 2): string
     {
@@ -120,36 +120,77 @@ if (! function_exists('generate_initials')) {
         return $initials;
     }
 
-    if (! function_exists('clean_string')) {
-        /**
-         * Cleans a string by removing specific characters and normalizing whitespace.
-         */
-        function clean_string(string $string, bool $lowercase = false): string
-        {
-            // Remove invisible characters
-            $string = preg_replace('/[\x00-\x08\x0B-\x1F\x7F]/u', '', $string);
-
-            // Normalize whitespace (including tabs and newlines)
-            $string = preg_replace('/\s+/u', ' ', trim($string));
-
-            return $lowercase ? mb_strtolower($string) : $string;
-        }
-    }
-
-    if (! function_exists('remove_trailing_double_slashes')) {
-        function remove_trailing_double_slashes(string $url): string
-        {
-            return preg_replace_callback(
-                '#^(https?://)?(.*)$#',
-                function ($matches) {
-                    $protocol = $matches[1]; // No need for null coalescing
-                    $rest = preg_replace('#/{2,}#', '/', $matches[2]); // Normalize slashes in the rest
-
-                    return $protocol . $rest;
-                },
-                $url
-            );
-        }
-    }
-
 }
+
+if (!function_exists('clean_string')) {
+    /**
+     * Cleans a string by removing specific characters and normalizing whitespace.
+     */
+    function clean_string(string $string, bool $lowercase = false): string
+    {
+        // Remove invisible characters
+        $string = preg_replace('/[\x00-\x08\x0B-\x1F\x7F]/u', '', $string);
+
+        // Normalize whitespace (including tabs and newlines)
+        $string = preg_replace('/\s+/u', ' ', trim($string));
+
+        return $lowercase ? mb_strtolower($string) : $string;
+    }
+}
+
+if (!function_exists('remove_trailing_double_slashes')) {
+    function remove_trailing_double_slashes(string $url): string
+    {
+        return preg_replace_callback(
+            '#^(https?://)?(.*)$#',
+            function ($matches) {
+                $protocol = $matches[1]; // No need for null coalescing
+                $rest = preg_replace('#/{2,}#', '/', $matches[2]); // Normalize slashes in the rest
+
+                return $protocol . $rest;
+            },
+            $url
+        );
+    }
+}
+
+
+/**
+ * Convert time duration string to ISO 8601 format
+ *
+ * @param string $duration Time duration in format like "1:30:34" or "30:34" or "34"
+ * @return string ISO 8601 duration format like "PT1H30M34S"
+ */
+function convert_to_iso_8601_duration(string $duration): string
+{
+    $parts = explode(':', $duration);
+    $parts = array_reverse($parts); // Start from seconds
+
+    $seconds = (int) ($parts[0] ?? 0);
+    $minutes = (int) ($parts[1] ?? 0);
+    $hours = (int) ($parts[2] ?? 0);
+
+    $iso8601 = 'PT';
+
+    if ($hours > 0) {
+        $iso8601 .= $hours . 'H';
+    }
+
+    if ($minutes > 0) {
+        $iso8601 .= $minutes . 'M';
+    }
+
+    if ($seconds > 0) {
+        $iso8601 .= $seconds . 'S';
+    }
+
+    // If no time components, return PT0S
+    if ($iso8601 === 'PT') {
+        $iso8601 = 'PT0S';
+    }
+
+    return $iso8601;
+}
+
+
+
