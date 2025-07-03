@@ -17,5 +17,5 @@ return RectorConfig::configure()
     ->withPreparedSets(codingStyle: true, codeQuality: true, deadCode: true)
     ->withTypeCoverageLevel(50)
     ->withRules([
-        DeclareStrictTypesRector::class
+        DeclareStrictTypesRector::class,
     ]);
