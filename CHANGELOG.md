@@ -2,6 +2,10 @@
 
 All notable changes to `misc-helpers` will be documented in this file.
 
+## v1.3.0 - 2026-03-18
+
+Updated version constraints
+
 ## v1.2.0 - 2025-07-03
 
 - Feature: Convert time duration string to ISO 8601 format
